@@ -45,7 +45,7 @@ export function Contact() {
               <a
                 href={c.href}
                 {...(c.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                {...(c.download ? { download: '' } : {})}
+                {...(c.download ? { download: `${profile.name.replace(/\s+/g, '-')}-CV.pdf` } : {})}
                 className="min-w-0 flex-1 after:absolute after:inset-0 after:rounded-2xl"
               >
                 <span className="block text-sm text-slate-500">{c.label}</span>

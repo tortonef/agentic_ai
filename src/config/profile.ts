@@ -3,9 +3,9 @@
  * Values wrapped in [brackets] are placeholders to replace.
  */
 export const profile = {
-  name: 'Your Name',
-  initials: 'YN',
-  role: 'GenAI & Agentic Systems Engineer',
+  name: 'Federico Tortonesi',
+  initials: 'FT',
+  role: 'Service Delivery Manager · AI Transformation · GenAI Builder',
   positioning: 'Generative AI · Data & AI Transformation · Intelligent Automation',
 
   hero: {
@@ -16,9 +16,9 @@ export const profile = {
 
   links: {
     github: 'https://github.com/tortonef',
-    linkedin: 'https://www.linkedin.com/in/your-profile',
-    email: 'you@example.com',
-    /** File in /public. Replace public/cv.pdf with your own CV (keep the name or change it here). */
+    linkedin: 'https://www.linkedin.com/in/federico-tortonesi/',
+    email: 'federico.tortonesi.96@gmail.com',
+    /** File in /public. Your CV; replace public/cv.pdf to update it. */
     cv: 'cv.pdf',
   },
 
