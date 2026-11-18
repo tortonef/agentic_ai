@@ -19,6 +19,12 @@ export function About() {
               </div>
             ))}
           </dl>
+          <h3 className="mt-8 font-mono text-[11px] font-normal uppercase tracking-[0.14em] text-slate-500">Certifications</h3>
+          <ul className="mt-3 flex flex-wrap gap-2">
+            {about.certifications.map((c) => (
+              <li key={c} className="chip">{c}</li>
+            ))}
+          </ul>
         </Reveal>
 
         <Reveal delay={0.1}>

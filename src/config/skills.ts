@@ -8,54 +8,54 @@ export interface SkillGroup {
   tools: string[]
 }
 
-/** Edit freely: the Skills section renders whatever is listed here. */
+/** Edit freely: the Skills section renders whatever is listed here. Sourced from the CV and public repos. */
 export const skills: SkillGroup[] = [
   {
     title: 'Large Language Models',
     icon: Brain,
-    summary: 'Model selection, evaluation and safe deployment of LLM-powered applications.',
-    tools: ['Commercial LLM APIs', 'Open-weight models', 'Evaluation', 'Guardrails'],
+    summary: 'LLM application patterns, from hosted models on free tiers to small open models running fully locally.',
+    tools: ['Claude (certified developer)', 'Groq', 'Ollama', 'Azure AI'],
   },
   {
     title: 'Retrieval-Augmented Generation',
     icon: Database,
-    summary: 'Chunking strategies, embeddings, hybrid search, re-ranking and grounded answers with citations.',
-    tools: ['Vector databases', 'Hybrid search', 'Re-ranking', 'LlamaIndex / LangChain'],
+    summary: 'Hybrid retrieval, grounding enforced in code, citations to sources, and evaluation on real questions.',
+    tools: ['pgvector', 'Hybrid search', 'Local embeddings', 'Grounding checks'],
   },
   {
     title: 'Agentic AI',
     icon: Bot,
-    summary: 'Multi-agent orchestration, tool use, planning loops and human-in-the-loop controls.',
-    tools: ['Tool calling', 'MCP', 'LangGraph', 'Orchestration patterns'],
+    summary: 'AI agents and workflow orchestration with human-in-the-loop approval and actions limited to a fixed catalog.',
+    tools: ['MCP', 'Tool calling', 'Workflow orchestration', 'Human-in-the-loop'],
   },
   {
-    title: 'Prompt Engineering',
+    title: 'Prompt & Context Engineering',
     icon: MessageSquareCode,
-    summary: 'Systematic prompt design: few-shot, structured outputs, role framing and prompt evaluation.',
-    tools: ['Few-shot', 'JSON schemas', 'Reasoning prompts', 'Prompt testing'],
+    summary: 'Prompts and context designed for reliable, structured and auditable outputs.',
+    tools: ['Structured JSON output', 'Context engineering', 'Grounded prompts', 'Evaluation sets'],
   },
   {
-    title: 'Python',
+    title: 'Python & Data Platforms',
     icon: Code2,
-    summary: 'Production-grade Python for data pipelines, APIs and AI services.',
-    tools: ['FastAPI', 'Pydantic', 'pandas', 'pytest'],
+    summary: 'Hands-on data integration and engineering, from enterprise data warehouses to Python services.',
+    tools: ['Python', 'SQL', 'Microsoft Fabric', 'Power BI', 'Snowflake', 'Oracle ODI / DWH', 'Java / Groovy'],
   },
   {
     title: 'Data Science & ML',
     icon: LineChart,
-    summary: 'From exploratory analysis to classical ML models and experiment tracking.',
-    tools: ['scikit-learn', 'NumPy', 'Jupyter', 'MLOps basics'],
+    summary: 'Machine learning from research to industry: transfer learning and model compression at CERN, anomaly detection in retail.',
+    tools: ['Deep learning', 'Transfer learning', 'Anomaly detection', 'Keras / PyTorch'],
   },
   {
     title: 'AI Automation',
     icon: Workflow,
-    summary: 'Automating business workflows end-to-end with LLMs, APIs and orchestration tools.',
-    tools: ['Workflow engines', 'APIs & webhooks', 'Document processing', 'RPA integration'],
+    summary: 'Automating service operations: knowledge retrieval, incident and problem analysis, standardized procedures.',
+    tools: ['ServiceNow', 'Slack alerts', 'Docker', 'Grafana'],
   },
   {
-    title: 'Enterprise AI Solutions',
+    title: 'Enterprise AI & Delivery',
     icon: Building2,
-    summary: 'Connecting AI capabilities to business processes, governance and measurable outcomes.',
-    tools: ['AI strategy', 'Governance', 'Change management', 'Cloud platforms'],
+    summary: 'Use-case discovery, roadmaps and value measurement, delivered through solid service governance.',
+    tools: ['AI strategy & roadmaps', 'Responsible AI', 'KPI & value realization', 'Service delivery', 'ITIL 4', 'Scrum'],
   },
 ]
