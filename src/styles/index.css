@@ -1,0 +1,139 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', ui-sans-serif, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* Surfaces: charcoal / navy */
+  --color-ink-950: #06070c;
+  --color-ink-900: #0a0c14;
+  --color-ink-850: #0e111b;
+  --color-ink-800: #121624;
+  --color-ink-700: #1a1f31;
+  --color-ink-600: #262c42;
+
+  /* Accents */
+  --color-iris: #8b5cf6;
+  --color-iris-soft: #a78bfa;
+  --color-volt: #3b82f6;
+  --color-volt-soft: #60a5fa;
+  --color-mint: #34d399;
+  --color-amber: #fbbf24;
+}
+
+@layer base {
+  html {
+    background: var(--color-ink-900);
+    color: #cbd5e1;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-ink-900);
+    min-height: 100vh;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-iris) 45%, transparent);
+    color: white;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-iris-soft);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: #f1f5f9;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  .surface {
+    background: linear-gradient(180deg, color-mix(in oklab, var(--color-ink-800) 92%, transparent), color-mix(in oklab, var(--color-ink-850) 92%, transparent));
+    border: 1px solid rgb(255 255 255 / 0.07);
+    border-radius: 1rem;
+  }
+  .glass {
+    background: rgb(14 17 27 / 0.6);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid rgb(255 255 255 / 0.08);
+  }
+  .text-gradient {
+    background: linear-gradient(100deg, #c4b5fd 0%, #a78bfa 30%, #60a5fa 75%, #93c5fd 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hairline {
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.12), transparent);
+    height: 1px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: 9999px;
+    border: 1px solid rgb(255 255 255 / 0.08);
+    background: rgb(255 255 255 / 0.03);
+    padding: 0.25rem 0.65rem;
+    font-size: 0.75rem;
+    color: #cbd5e1;
+  }
+  .field {
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid rgb(255 255 255 / 0.09);
+    background: var(--color-ink-950);
+    padding: 0.7rem 0.9rem;
+    font-size: 0.9rem;
+    color: #e2e8f0;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field:focus {
+    outline: none;
+    border-color: color-mix(in oklab, var(--color-iris) 70%, transparent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-iris) 18%, transparent);
+  }
+  .scroll-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-ink-600) transparent;
+  }
+}
+
+/* Ambient drift for background orbs */
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(3%, -4%, 0) scale(1.06); }
+}
+.animate-drift { animation: drift 18s ease-in-out infinite; }
+
+@keyframes caret { 50% { opacity: 0; } }
+.caret::after {
+  content: '';
+  display: inline-block;
+  width: 0.5ch;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: var(--color-iris-soft);
+  animation: caret 1s steps(1) infinite;
+}
+
+/* React Flow: blend into the dark theme */
+.react-flow { --xy-background-color: transparent; }
+.react-flow__attribution { display: none; }
+.react-flow__handle { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
