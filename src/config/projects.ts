@@ -24,8 +24,8 @@ export const projects: Project[] = [
       'Real lexical retrieval (feature-hashed TF-IDF + cosine similarity) in the RAG demo, so ranking is computed rather than scripted.',
       'Each demo is a lazy-loaded module registered in one config file, keeping the initial bundle small and new demos easy to add.',
     ],
-    repo: 'https://github.com/your-username/your-repo',
-    demo: null,
+    repo: 'https://github.com/tortonef/genai-lab',
+    demo: 'https://tortonef.github.io/genai-lab/',
   },
   {
     title: '[Project title]',

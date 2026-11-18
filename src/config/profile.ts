@@ -15,7 +15,7 @@ export const profile = {
   },
 
   links: {
-    github: 'https://github.com/your-username',
+    github: 'https://github.com/tortonef',
     linkedin: 'https://www.linkedin.com/in/your-profile',
     email: 'you@example.com',
     /** File in /public. Replace public/cv.pdf with your own CV (keep the name or change it here). */
