@@ -14,7 +14,7 @@ export function Projects() {
       title="Selected work"
       description="Each project is framed the way I approach real engagements: the problem first, then the solution and the architectural decisions behind it."
     >
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-5 md:grid-cols-2">
         {projects.map((p, i) => (
           <Reveal key={i} delay={i * 0.06} className="h-full">
             <ProjectCard project={p} index={i} />
