@@ -1,7 +1,7 @@
 // Run with: npm test  (Node strips the TypeScript types natively)
 import assert from 'node:assert/strict'
 import { documents, suggestedQuestions } from '../src/demos/rag/documents.ts'
-import { runPipeline, chunkDoc } from '../src/demos/rag/pipeline.ts'
+import { runPipeline, chunkDoc, sentences } from '../src/demos/rag/pipeline.ts'
 import { buildRun, classify } from '../src/demos/agents/engine.ts'
 
 const opts = { chunkWords: 45, overlap: false, topK: 4 }
@@ -115,5 +115,8 @@ assert.equal(results[0].type === 'tool_result' && results[0].result, '42')
 const run2 = await runAgent({ llm: scripted([{ calls: [['calculator', { expression: '1+1' }]] }]), objective: 'loop forever', tools: [calcTool], onEvent: () => {}, maxSteps: 3 })
 assert.equal(run2.stoppedAtCap, true)
 assert.equal(run2.final, null)
+
+// Abbreviations like "M.S." stay inside one sentence.
+assert.deepEqual(sentences('Education. M.S. in Physics at La Sapienza. Thesis on AI.'), ['Education.', 'M.S. in Physics at La Sapienza.', 'Thesis on AI.'])
 
 console.log('logic checks passed')

@@ -21,7 +21,10 @@ export function tokenize(text: string): string[] {
 }
 
 export function sentences(text: string): string[] {
-  return text.match(/[^.!?]+[.!?]+(\s|$)/g)?.map((s) => s.trim()) ?? [text]
+  // A sentence ends at . ! ? followed by a new capitalised sentence (or the end), so "M.S. in" and "3.5" stay whole.
+  const END = /(?=\s+[A-Z0-9"'“(•-]|\s*$)/.source
+  const re = new RegExp(`(?:[^.!?]|[.!?](?!\\s+[A-Z0-9"'“(•-]|\\s*$))+[.!?]+${END}`, 'g')
+  return text.match(re)?.map((s) => s.trim()) ?? [text]
 }
 
 export interface Chunk {
