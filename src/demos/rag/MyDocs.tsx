@@ -105,7 +105,8 @@ export function MyDocs() {
       }
       const qVec = index.engine === 'minilm' ? (await embedTexts([searchQuery]))[0] : tfidfQueryVector(index, searchQuery)
       const hits = search(index, qVec, searchQuery, TOP_K)
-      const strong = hits.filter((h) => isEvidence(index.engine, h))
+      // With an LLM the gate is looser: it can say "not in the sources" itself; quoted extracts need the strict bar.
+      const strong = hits.filter((h) => isEvidence(index.engine, h) || (!!llm && isContext(index.engine, h)))
       const evidence = llm ? hits.filter((h) => isEvidence(index.engine, h) || isContext(index.engine, h)) : strong
       if (!strong.length) {
         setAnswer({ question: q, mode: llm ? 'llm' : 'extractive', text: 'None of your documents seems to cover this question, so there is nothing to answer from.', removed: [], hits, searchQuery })
