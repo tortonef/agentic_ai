@@ -101,7 +101,7 @@ const scripted = (replies: { content?: string; calls?: [string, object][] }[]) =
 const calcTool = { id: 'calculator', def: { type: 'function' as const, function: { name: 'calculator', description: '', parameters: {} } }, run: async (a: Record<string, unknown>) => String(calculate(String(a.expression))) }
 const ev: AgentEvent[] = []
 const run1 = await runAgent({
-  llm: scripted([{ content: 'Computing.', calls: [['calculator', { expression: '6*7' }], ['web_search', { q: 'x' }]] }, { content: 'The answer is 42.' }]),
+  llm: scripted([{ content: 'Computing.', calls: [['calculator', { expression: '6*7' }], ['web_search', { q: 'x' }]] }, { content: 'The answer is 42. 【3†L1-L2】' }]),
   objective: 'What is 6 times 7?',
   tools: [calcTool],
   onEvent: (e) => ev.push(e),

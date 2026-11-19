@@ -20,6 +20,7 @@ interface Answer {
   removed: number[]
   hits: Hit[]
   tokens?: number
+  searchQuery?: string
 }
 
 export function MyDocs() {
@@ -89,12 +90,25 @@ export function MyDocs() {
     setError(null)
     setFocus(null)
     try {
-      const qVec = index.engine === 'minilm' ? (await embedTexts([q]))[0] : tfidfQueryVector(index, q)
-      const hits = search(index, qVec, q, TOP_K)
+      // Query rewriting: the embedding model is English-only, so with an LLM the question becomes an English search query first.
+      let searchQuery = q
+      if (llm) {
+        const rw = await llm.chat({
+          temperature: 0,
+          maxTokens: 512,
+          messages: [
+            { role: 'system', content: 'Rewrite the question as a short English search query containing its key terms (translate if needed). Reply with the query only, no quotes.' },
+            { role: 'user', content: q },
+          ],
+        })
+        searchQuery = rw.content?.trim().replace(/^["']|["']$/g, '') || q
+      }
+      const qVec = index.engine === 'minilm' ? (await embedTexts([searchQuery]))[0] : tfidfQueryVector(index, searchQuery)
+      const hits = search(index, qVec, searchQuery, TOP_K)
       const strong = hits.filter((h) => isEvidence(index.engine, h))
       const evidence = llm ? hits.filter((h) => isEvidence(index.engine, h) || isContext(index.engine, h)) : strong
       if (!strong.length) {
-        setAnswer({ question: q, mode: llm ? 'llm' : 'extractive', text: 'None of your documents seems to cover this question, so there is nothing to answer from.', removed: [], hits })
+        setAnswer({ question: q, mode: llm ? 'llm' : 'extractive', text: 'None of your documents seems to cover this question, so there is nothing to answer from.', removed: [], hits, searchQuery })
         return
       }
       if (llm) {
@@ -112,7 +126,7 @@ export function MyDocs() {
           ],
         })
         const checked = checkCitations(reply.content ?? '', evidence.length)
-        setAnswer({ question: q, mode: 'llm', text: checked.text, removed: checked.removed, hits: evidence, tokens: reply.usage?.total_tokens })
+        setAnswer({ question: q, mode: 'llm', text: checked.text, removed: checked.removed, hits: evidence, tokens: reply.usage?.total_tokens, searchQuery })
       } else {
         const picked = extractAnswer(evidence, [...new Set(tokenize(q))])
         setAnswer({
@@ -230,7 +244,10 @@ export function MyDocs() {
         {answer && (
           <Panel title={answer.mode === 'llm' ? 'Answer · generated from your sources' : 'Answer · extracted from your sources'} icon={<Quote size={12} aria-hidden />} actions={answer.tokens ? <span className="font-mono text-[10px] text-slate-500">{answer.tokens} tokens</span> : undefined}>
             <div className="space-y-3 p-4">
-              <p className="text-xs text-slate-500">“{answer.question}”</p>
+              <p className="text-xs text-slate-500">
+                “{answer.question}”
+                {answer.searchQuery && answer.searchQuery.toLowerCase() !== answer.question.toLowerCase() && <span className="ml-2 font-mono text-[11px] text-slate-600">→ searched for: {answer.searchQuery}</span>}
+              </p>
               <p className="leading-relaxed text-slate-200">
                 {answer.text.split(/(\[\d+\])/).map((part, i) => {
                   const m = part.match(/^\[(\d+)\]$/)
@@ -266,7 +283,7 @@ export function MyDocs() {
                   <div className="mb-2 h-1 overflow-hidden rounded-full bg-white/5">
                     <div className="h-full bg-gradient-to-r from-iris to-volt" style={{ width: `${Math.min(100, h.score * 100)}%` }} />
                   </div>
-                  <Highlighted text={h.text} question={answer.question} />
+                  <Highlighted text={h.text} question={answer.searchQuery ?? answer.question} />
                 </li>
               ))}
             </ol>

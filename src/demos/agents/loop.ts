@@ -28,7 +28,7 @@ export function systemPrompt(tools: AgentTool[]): string {
 - Use the tools when they help; never invent data a tool could give you. Do arithmetic with the calculator, not in your head.
 - Before you recommend or commit to an action that spends money, changes a price or affects customers, call ask_human with the proposed action${tools.some((t) => t.id === 'ask_human') ? '' : ' (that tool is disabled here, so say the action needs human approval instead)'}. If the human rejects it, adapt.
 - Before each tool call, say in one short sentence what you are about to do and why.
-- Finish with a concise answer in plain text (no markdown): the result, the key numbers with their source (which tool), and any open risks.
+- Finish with a concise answer in plain text (no markdown, no citation markers like 【1】): the result, the key numbers with their source (which tool), and any open risks.
 Available tools: ${tools.map((t) => t.def.function.name).join(', ') || 'none'}.`
 }
 
@@ -61,7 +61,8 @@ export async function runAgent(opts: {
     if (thought?.trim()) onEvent({ type: 'thought', step, text: thought.trim() })
 
     if (!reply.toolCalls.length) {
-      const text = reply.content?.trim() || 'The agent finished without a written answer.'
+      // GPT-OSS sometimes appends browsing-style markers (【3†L1-L2】) that point nowhere here.
+      const text = (reply.content ?? '').replace(/\s*【[^】]*】/g, '').trim() || 'The agent finished without a written answer.'
       onEvent({ type: 'final', step, text })
       return { final: text, steps: step, tokens, stoppedAtCap: false }
     }

@@ -34,7 +34,25 @@ export default function UseCaseCanvas() {
             content:
               'You are an AI transformation consultant writing for a business executive. Write an executive summary of at most 120 words, then "Key risks:" with exactly three bullets, each with a mitigation. Use only the numbers given; never change, round differently or add figures. Plain text with "- " bullets, no headings.',
           },
-          { role: 'user', content: `Use case: ${input.process}\nAssessment (computed, do not alter):\n${JSON.stringify({ ...a, roadmap: a.roadmap.map((r) => r.phase), inputs: input })}` },
+          {
+            role: 'user',
+            // Pre-formatted facts (currency, rounding) so the model quotes them as-is instead of re-formatting raw floats.
+            content: `Use case: ${input.process}\nFacts (computed, quote exactly, currency is EUR):\n${JSON.stringify({
+              annual_value: formatEur(a.annualValue),
+              labour_value: formatEur(a.laborValue),
+              error_value: formatEur(a.errorValue),
+              hours_saved_per_year: Math.round(a.hoursSaved).toLocaleString('en'),
+              fte_saved: a.fteSaved.toFixed(1),
+              payback: a.paybackMonths ? `${a.paybackMonths} months` : 'not computed',
+              scores: `value ${a.valueScore}/100, feasibility ${a.feasibilityScore}/100, risk ${a.riskScore}/100`,
+              verdict: a.quadrant.label,
+              approach: a.pattern.name,
+              oversight: a.oversight,
+              roadmap: a.roadmap.map((r) => `${r.phase} (${r.duration})`),
+              ratings_1_to_5: { data_availability: input.dataAvailability, data_quality: input.dataQuality, standardisation: input.standardisation, regulatory_risk: input.regulatoryRisk, customer_impact: input.customerImpact },
+              systems_involved: input.systems,
+            })}`,
+          },
         ],
       })
       setNarrative(reply.content?.trim() ?? null)
