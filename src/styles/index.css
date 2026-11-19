@@ -137,3 +137,10 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Use-case canvas: "Print / PDF" prints only the brief, on white paper. */
+@media print {
+  body * { visibility: hidden; }
+  .print-brief, .print-brief * { visibility: visible; }
+  .print-brief { position: absolute; inset: 0 auto auto 0; width: 100%; max-height: none !important; overflow: visible !important; background: #fff !important; color: #111 !important; font-size: 11pt; }
+}

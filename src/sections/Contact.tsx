@@ -37,7 +37,7 @@ export function Contact() {
     >
       <div className="grid gap-4 sm:grid-cols-2">
         {cards.map((c, i) => (
-          <Reveal key={c.label} delay={i * 0.05}>
+          <Reveal key={c.label} delay={i * 0.05} className="min-w-0">
             <div className="surface group relative flex items-center gap-4 p-5 transition-all duration-300 hover:border-iris/30 hover:bg-iris/[0.03]">
               <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-slate-300 transition-colors group-hover:text-white">
                 {c.icon}

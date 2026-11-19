@@ -2,10 +2,21 @@ import { Suspense, useRef, useState, type KeyboardEvent } from 'react'
 import { motion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
 import { labDemos } from '../config/lab'
-import { Section, Reveal, SimulatedBadge } from '../components/ui'
+import { Section, Reveal, SimulatedBadge, LiveBadge, LocalBadge } from '../components/ui'
+import { ApiKeyPanel } from '../components/ApiKeyPanel'
+import { LlmProvider, useLlm } from '../lib/llm-context'
 import { cn } from '../lib/cn'
 
 export function Lab() {
+  return (
+    <LlmProvider>
+      <LabInner />
+    </LlmProvider>
+  )
+}
+
+function LabInner() {
+  const { llm } = useLlm()
   const [activeId, setActiveId] = useState(labDemos[0].id)
   const tabs = useRef<(HTMLButtonElement | null)[]>([])
   const active = labDemos.find((d) => d.id === activeId)!
@@ -30,10 +41,11 @@ export function Lab() {
           A working lab, <span className="text-gradient">not a slide deck.</span>
         </>
       }
-      description="Three hands-on demonstrations of how modern AI systems are put together. Every run is a transparent, deterministic simulation, so you can inspect each step."
+      description="Five hands-on tools: analyse your own data, ask questions about your documents, build an agent, size an AI use case and compare prompting techniques. They work offline with local code; connect a free Groq key to run real LLMs."
     >
       <Reveal>
-        <div role="tablist" aria-label="Lab demonstrations" className="mb-6 grid gap-3 md:grid-cols-3">
+        <ApiKeyPanel />
+        <div role="tablist" aria-label="Lab demonstrations" className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {labDemos.map((demo, i) => {
             const selected = demo.id === activeId
             const Icon = demo.icon
@@ -84,7 +96,7 @@ export function Lab() {
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-slate-500">
             lab / <span className="text-slate-300">{active.id}</span>
           </p>
-          <SimulatedBadge />
+          {llm && active.live ? <LiveBadge model={llm.model} /> : active.offline === 'local' ? <LocalBadge /> : <SimulatedBadge />}
         </div>
         <Suspense
           fallback={

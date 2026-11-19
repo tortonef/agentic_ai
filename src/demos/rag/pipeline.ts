@@ -122,7 +122,7 @@ export function runPipeline(docs: SourceDoc[], question: string, opts: { chunkWo
 }
 
 /** Picks the sentences that best cover the question, citing the context chunk they came from. */
-function extractAnswer(context: Scored[], queryTokens: string[]) {
+export function extractAnswer(context: { text: string; score: number }[], queryTokens: string[]) {
   const q = new Set(queryTokens)
   const candidates = context.slice(0, 3).flatMap((c, ci) =>
     sentences(c.text).map((s, si) => {
@@ -132,7 +132,8 @@ function extractAnswer(context: Scored[], queryTokens: string[]) {
       return { text: s, cite: ci + 1, score: hits + c.score - ci * 0.01 - si * 0.001 }
     }),
   )
-  const best = candidates.filter((c) => c.score >= 1).sort((a, b) => b.score - a.score)
+  // Headings and list labels (under 4 words) are matches, not answers.
+  const best = candidates.filter((c) => c.score >= 1 && c.text.split(/\s+/).length >= 4).sort((a, b) => b.score - a.score)
   const picked: typeof best = []
   for (const c of best) {
     if (picked.length >= 2) break
