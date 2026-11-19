@@ -238,7 +238,10 @@ export function LiveAgent() {
         <Panel title="Answer" icon={<Flag size={12} aria-hidden />}>
           <div className="p-4 text-sm leading-relaxed">
             {final && final.type === 'final' ? (
-              <p className="whitespace-pre-wrap text-slate-200">{final.text}</p>
+              <p className="whitespace-pre-wrap text-slate-200">
+                {/* Models sometimes add **bold** despite the prompt: render it instead of showing asterisks. */}
+                {final.text.split(/(\*\*[^*]+\*\*)/).map((part, i) => (part.startsWith('**') && part.endsWith('**') ? <strong key={i} className="text-white">{part.slice(2, -2)}</strong> : part))}
+              </p>
             ) : summary?.stoppedAtCap ? (
               <p className="text-amber/90">The agent reached the {MAX_STEPS}-step cap without a final answer. Try a narrower objective or enable the tool it was missing.</p>
             ) : error ? (

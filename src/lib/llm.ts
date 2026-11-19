@@ -39,6 +39,8 @@ export interface ChatOptions {
   json?: boolean
   temperature?: number
   maxTokens?: number
+  /** Reasoning budget for models that think before answering (GPT-OSS). Reasoning tokens count against maxTokens. */
+  reasoning?: 'low' | 'medium' | 'high'
   signal?: AbortSignal
 }
 
@@ -95,7 +97,7 @@ export async function verifyKey(key: string, signal?: AbortSignal): Promise<void
 export function createGroq(key: string, model: string): Llm {
   return {
     model,
-    async chat({ messages, tools, json, temperature = 0.2, maxTokens = 1500, signal }) {
+    async chat({ messages, tools, json, temperature = 0.2, maxTokens = 2048, reasoning = 'low', signal }) {
       const data = (await call(key, '/chat/completions', {
         method: 'POST',
         signal,
@@ -106,9 +108,11 @@ export function createGroq(key: string, model: string): Llm {
           max_completion_tokens: maxTokens,
           ...(tools?.length ? { tools, tool_choice: 'auto' } : {}),
           ...(json ? { response_format: { type: 'json_object' } } : {}),
+          ...(model.startsWith('openai/gpt-oss') ? { reasoning_effort: reasoning } : {}),
         }),
       })) as { choices: { message: { content: string | null; reasoning?: string; tool_calls?: ToolCall[] } }[]; usage?: Usage }
       const msg = data.choices[0]?.message
+      if (!msg?.content?.trim() && !msg?.tool_calls?.length) throw new LlmError(200, 'The model returned an empty reply (it may have run out of tokens while reasoning). Try again.')
       return { content: msg?.content ?? null, reasoning: msg?.reasoning, toolCalls: msg?.tool_calls ?? [], usage: data.usage }
     },
   }

@@ -75,7 +75,9 @@ export function buildTools(enabled: ToolId[], approve: Approver): AgentTool[] {
         const { ensureDemoTable, query } = await import('../../lib/duckdb')
         await ensureDemoTable()
         const r = await query(g.sql)
-        return `${r.rows.length} rows${r.rows.length > 50 ? ' (first 50 shown)' : ''}: ${JSON.stringify(r.rows.slice(0, 50))}`
+        // Round float noise (28326.600000000002) so the model reads clean numbers.
+        const rows = r.rows.slice(0, 50).map((row) => Object.fromEntries(Object.entries(row).map(([k, v]) => [k, typeof v === 'number' && !Number.isInteger(v) ? Number(v.toFixed(4)) : v])))
+        return `${r.rows.length} rows${r.rows.length > 50 ? ' (first 50 shown)' : ''}: ${JSON.stringify(rows)}`
       },
     },
     ask_human: {

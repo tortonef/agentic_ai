@@ -255,6 +255,11 @@ function Ask({ profile, isDemo, live }: { profile: Profile; isDemo: boolean; liv
         <Panel key={answers.length - i} title={a.spec.title} actions={<span className="font-mono text-[10px] text-slate-500">{a.attempts > 1 ? 'fixed after 1 retry · ' : ''}{a.tokens.toLocaleString('en')} tokens</span>}>
           <div className="space-y-3 p-4">
             <p className="text-xs text-slate-500">“{a.question}”</p>
+            {a.caveat && (
+              <p className="flex gap-2 rounded-lg border border-amber/30 bg-amber/[0.06] px-3 py-2 text-[13px] text-amber/90">
+                <AlertTriangle size={15} className="mt-0.5 shrink-0" aria-hidden /> {a.caveat}
+              </p>
+            )}
             {a.insight && <p className="text-sm leading-relaxed text-slate-200">{a.insight}</p>}
             <Chart spec={a.spec} result={a.result} />
             <details className="text-xs">

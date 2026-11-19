@@ -27,7 +27,7 @@ export default function UseCaseCanvas() {
     try {
       const reply = await llm.chat({
         temperature: 0.4,
-        maxTokens: 600,
+        maxTokens: 2048,
         messages: [
           {
             role: 'system',

@@ -26,6 +26,12 @@ export const MIN_SCORE: Record<Engine, number> = { minilm: 0.3, tfidf: 0.18 }
 /** A hit is evidence when its hybrid score clears the bar, or (neural only) when meaning matches strongly without shared keywords. */
 export const isEvidence = (engine: Engine, h: Hit) => h.score >= MIN_SCORE[engine] || (engine === 'minilm' && h.cosine >= 0.35)
 
+/**
+ * Once at least one hit is real evidence, the LLM gets every reasonably related passage from the
+ * top-k: it is better at ignoring noise than at answering from a passage it never saw.
+ */
+export const isContext = (engine: Engine, h: Hit) => h.score >= MIN_SCORE[engine] / 2 || (engine === 'minilm' && h.cosine >= 0.2)
+
 export function buildTfidfIndex(chunks: Chunk[]): DocIndex {
   const df = new Map<string, number>()
   chunks.forEach((c) => new Set(c.tokens).forEach((t) => df.set(t, (df.get(t) ?? 0) + 1)))
@@ -61,6 +67,8 @@ export function checkCitations(answer: string, sourceCount: number): { text: str
   const cited = new Set<number>()
   const removed = new Set<number>()
   const text = answer
+    // Some models (e.g. GPT-OSS) cite with full-width brackets: 【1】 → [1].
+    .replace(/[【［]\s*(\d+(?:\s*[,，]\s*\d+)*)\s*[】］]/g, (_, g: string) => `[${g.replace(/，/g, ',')}]`)
     .replace(/\[(\d+(?:\s*,\s*\d+)*)\]/g, (_, group: string) => {
       const keep = group
         .split(',')

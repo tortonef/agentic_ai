@@ -83,6 +83,7 @@ assert.ok(briefMarkdown(presets[0].input, sd).includes('estimates computed from 
 const cc = checkCitations('Three days [1]. Budget is 600 euros [2][7]. Made up [9].', 2)
 assert.deepEqual(cc.removed, [7, 9])
 assert.equal(cc.text, 'Three days [1]. Budget is 600 euros [2]. Made up.')
+assert.equal(checkCitations('Two certs【1】 and more【2，3】.', 2).text, 'Two certs[1] and more[2].')
 const idx = buildTfidfIndex(documents.flatMap((d) => chunkDoc(d, 60, true)))
 assert.equal(search(idx, tfidfQueryVector(idx, 'meal allowance international travel'), 'meal allowance international travel', 3)[0].docId, 'expenses')
 

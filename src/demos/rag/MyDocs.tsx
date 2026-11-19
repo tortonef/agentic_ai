@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type DragEvent, type FormEvent } from 'rea
 import { BookOpen, Cpu, FileText, FileUp, Loader2, Quote, Search, ShieldCheck, Sparkles, Trash2 } from 'lucide-react'
 import { documents as sampleDocs, suggestedQuestions, type SourceDoc } from './documents'
 import { chunkDoc, extractAnswer, tokenize } from './pipeline'
-import { buildTfidfIndex, checkCitations, isEvidence, search, tfidfQueryVector, type DocIndex, type Hit } from './semantic'
+import { buildTfidfIndex, checkCitations, isContext, isEvidence, search, tfidfQueryVector, type DocIndex, type Hit } from './semantic'
 import { parseFile } from './parse'
 import { embedTexts, type EmbedProgress } from '../../lib/embeddings'
 import { useLlm } from '../../lib/llm-context'
@@ -91,8 +91,9 @@ export function MyDocs() {
     try {
       const qVec = index.engine === 'minilm' ? (await embedTexts([q]))[0] : tfidfQueryVector(index, q)
       const hits = search(index, qVec, q, TOP_K)
-      const evidence = hits.filter((h) => isEvidence(index.engine, h))
-      if (!evidence.length) {
+      const strong = hits.filter((h) => isEvidence(index.engine, h))
+      const evidence = llm ? hits.filter((h) => isEvidence(index.engine, h) || isContext(index.engine, h)) : strong
+      if (!strong.length) {
         setAnswer({ question: q, mode: llm ? 'llm' : 'extractive', text: 'None of your documents seems to cover this question, so there is nothing to answer from.', removed: [], hits })
         return
       }
@@ -100,12 +101,12 @@ export function MyDocs() {
         const sources = evidence.map((h, i) => `[${i + 1}] ${h.docTitle}\n${h.text}`).join('\n\n')
         const reply = await llm.chat({
           temperature: 0.1,
-          maxTokens: 700,
+          maxTokens: 2048,
           messages: [
             {
               role: 'system',
               content:
-                'Answer the question using ONLY the numbered sources. After every sentence, cite the sources it relies on like [1] or [2][3]. If the sources do not contain the answer, say so plainly. Be concise: at most 5 sentences, no headings. Answer in the language of the question.',
+                'Answer the question using ONLY the numbered sources. After every sentence, cite the sources it relies on with ASCII square brackets like [1] or [2][3]. If the sources do not contain the answer, say so plainly. Be concise: at most 5 sentences, no headings. Answer in the language of the question.',
             },
             { role: 'user', content: `Sources:\n${sources}\n\nQuestion: ${q}` },
           ],

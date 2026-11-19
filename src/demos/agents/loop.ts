@@ -28,7 +28,7 @@ export function systemPrompt(tools: AgentTool[]): string {
 - Use the tools when they help; never invent data a tool could give you. Do arithmetic with the calculator, not in your head.
 - Before you recommend or commit to an action that spends money, changes a price or affects customers, call ask_human with the proposed action${tools.some((t) => t.id === 'ask_human') ? '' : ' (that tool is disabled here, so say the action needs human approval instead)'}. If the human rejects it, adapt.
 - Before each tool call, say in one short sentence what you are about to do and why.
-- Finish with a concise answer in plain text: the result, the key numbers with their source (which tool), and any open risks. No markdown tables.
+- Finish with a concise answer in plain text (no markdown): the result, the key numbers with their source (which tool), and any open risks.
 Available tools: ${tools.map((t) => t.def.function.name).join(', ') || 'none'}.`
 }
 
@@ -55,7 +55,7 @@ export async function runAgent(opts: {
 
   for (let step = 1; step <= maxSteps; step++) {
     if (signal?.aborted) throw new DOMException('Stopped', 'AbortError')
-    const reply = await llm.chat({ messages, tools: tools.map((t) => t.def), signal, temperature: 0.2 })
+    const reply = await llm.chat({ messages, tools: tools.map((t) => t.def), signal, temperature: 0.2, reasoning: 'medium', maxTokens: 4096 })
     tokens += reply.usage?.total_tokens ?? 0
     const thought = (reply.toolCalls.length ? reply.content : null) ?? reply.reasoning
     if (thought?.trim()) onEvent({ type: 'thought', step, text: thought.trim() })
