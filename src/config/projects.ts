@@ -43,7 +43,8 @@ export const projects: Project[] = [
       'The outfit is chosen by exhaustive search over the top candidates per slot under the total budget, not by the LLM.',
     ],
     repo: 'https://github.com/tortonef/ai-stylist-rag',
-    demo: null,
+    demo: 'https://tortonef.github.io/ai-stylist-rag/',
+    demoLabel: 'Slides'
   },
   {
     title: 'MCP agent for data quality: database to ServiceNow',
@@ -103,7 +104,8 @@ export const projects: Project[] = [
       'Attributes a single photo rarely shows reliably (fit, season, materials) are labelled experimental and never flag an item.',
     ],
     repo: 'https://github.com/tortonef/fashion-catalog-enrichment',
-    demo: null,
+    demo: 'https://tortonef.github.io/fashion-catalog-enrichment/',
+    demoLabel: 'Slides'
   },
   {
     title: 'Neural Network Templater',
