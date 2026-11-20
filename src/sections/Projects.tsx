@@ -97,8 +97,8 @@ function ProjectCard({ project: p, index }: { project: Project; index: number })
           <span className="text-xs text-slate-600">Repository link to be added</span>
         )}
         {p.demo && (
-          <LinkButton href={p.demo} variant="subtle" className="px-3 py-2" aria-label={`${p.title} live demo (opens in a new tab)`}>
-            <ExternalLink size={15} aria-hidden /> Live demo
+          <LinkButton href={p.demo} variant="subtle" className="px-3 py-2" aria-label={`${p.title} ${(p.demoLabel ?? 'Live demo').toLowerCase()} (opens in a new tab)`}>
+            <ExternalLink size={15} aria-hidden /> {p.demoLabel ?? 'Live demo'}
           </LinkButton>
         )}
       </div>

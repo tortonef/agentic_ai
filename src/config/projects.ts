@@ -9,6 +9,8 @@ export interface Project {
   /** null hides the button instead of rendering a dead link. */
   repo: string | null
   demo: string | null
+  /** Button text for `demo`; defaults to "Live demo". */
+  demoLabel?: string
 }
 
 export const projects: Project[] = [
@@ -25,7 +27,8 @@ export const projects: Project[] = [
       'Hybrid search (pgvector + full text) over a knowledge base kept as Markdown in Git, reviewed by pull request and published to ServiceNow.',
     ],
     repo: 'https://github.com/tortonef/jarvis-servicenow',
-    demo: null,
+    demo: 'https://tortonef.github.io/jarvis-servicenow/',
+    demoLabel: 'Slides'
   },
   {
     title: 'AI Stylist: grounded RAG for fashion retail',
